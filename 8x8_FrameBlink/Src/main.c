@@ -11,11 +11,10 @@ volatile unsigned int *GPIOB_ODR=(volatile unsigned int*)0x40020414;
 void delay()
 {
 	int i = 0;
-	while (i < 9) {
+	while (i < 9000) {
 	    __asm("NOP");
 	    i++;
 	}
-
 }
 
 int main()
@@ -29,14 +28,12 @@ int main()
 	*RCC_AHB1ENR |=(1<<0);
 	*RCC_AHB1ENR |=(1<<1);
 
-
     int j = 0;
     while (j <= 14) {
         *GPIOA_MODER &= ~(1 << j);
         *GPIOA_MODER |=  (1 << j);
         j += 2;
     }
-
 
     int i = 0;
     while (i <= 24)
@@ -49,242 +46,52 @@ int main()
         i += 2;
     }
 
-
     while (1)
     {
-    	// column = 1
-
+        // ---- Top row (1,1) → (1,8)
         *GPIOA_ODR |= (1<<0);
-        *GPIOB_ODR |= (1<<0);
-        delay();
+        for (j = 0; j < 10; j++)
+        {
+            if(j==3 || j==4) continue;
+            *GPIOB_ODR |= (1<<j);
+            delay();
+            *GPIOB_ODR &= ~(1<<j);
+            delay();
+        }
         *GPIOA_ODR &= ~(1<<0);
-        *GPIOB_ODR &= ~(1<<0);
-        delay();
 
-        *GPIOA_ODR |= (1<<1);
+        // ---- Right column (2,8) → (8,8)
+        *GPIOB_ODR |= (1<<9);
+        for (i = 1; i < 8; i++)
+        {
+            *GPIOA_ODR |= (1<<i);
+            delay();
+            *GPIOA_ODR &= ~(1<<i);
+            delay();
+        }
+        *GPIOB_ODR &= ~(1<<9);
+
+        // ---- Bottom row (8,7) → (8,1)
+        *GPIOA_ODR |= (1<<7);
+        for (j = 8; j >= 0; j--)
+        {
+            if(j==3 || j==4) continue;
+            *GPIOB_ODR |= (1<<j);
+            delay();
+            *GPIOB_ODR &= ~(1<<j);
+            delay();
+        }
+        *GPIOA_ODR &= ~(1<<7);
+
+        // ---- Left column (7,1) → (2,1)
         *GPIOB_ODR |= (1<<0);
-        delay();
-        *GPIOA_ODR &= ~(1<<1);
+        for (i = 6; i >= 1; i--)
+        {
+            *GPIOA_ODR |= (1<<i);
+            delay();
+            *GPIOA_ODR &= ~(1<<i);
+            delay();
+        }
         *GPIOB_ODR &= ~(1<<0);
-        delay();
-
-        *GPIOA_ODR |= (1<<2);
-        *GPIOB_ODR |= (1<<0);
-        delay();
-        *GPIOA_ODR &= ~(1<<2);
-        *GPIOB_ODR &= ~(1<<0);
-        delay();
-
-
-        *GPIOA_ODR |= (1<<3);
-        *GPIOB_ODR |= (1<<0);
-        delay();
-        *GPIOA_ODR &= ~(1<<3);
-        *GPIOB_ODR &= ~(1<<0);
-        delay();
-
-        *GPIOA_ODR |= (1<<4);
-        *GPIOB_ODR |= (1<<0);
-        delay();
-        *GPIOA_ODR &= ~(1<<4);
-        *GPIOB_ODR &= ~(1<<0);
-        delay();
-
-        *GPIOA_ODR |= (1<<5);
-        *GPIOB_ODR |= (1<<0);
-        delay();
-        *GPIOA_ODR &= ~(1<<5);
-        *GPIOB_ODR &= ~(1<<0);
-        delay();
-
-        *GPIOA_ODR |= (1<<6);
-        *GPIOB_ODR |= (1<<0);
-        delay();
-        *GPIOA_ODR &= ~(1<<6);
-        *GPIOB_ODR &= ~(1<<0);
-        delay();
-
-        *GPIOA_ODR |= (1<<7);
-        *GPIOB_ODR |= (1<<0);
-        delay();
-        *GPIOA_ODR &= ~(1<<7);
-        *GPIOB_ODR &= ~(1<<0);
-        delay();
-
-        //Row = 1
-
-        *GPIOA_ODR |= (1<<0);
-        *GPIOB_ODR |= (1<<1);
-        delay();
-        *GPIOA_ODR &= ~(1<<0);
-        *GPIOB_ODR &= ~(1<<1);
-        delay();
-
-
-
-        *GPIOA_ODR |= (1<<0);
-        *GPIOB_ODR |= (1<<2);
-        delay();
-        *GPIOA_ODR &= ~(1<<0);
-        *GPIOB_ODR &= ~(1<<2);
-        delay();
-
-        *GPIOA_ODR |= (1<<0);
-        *GPIOB_ODR |= (1<<5);
-        delay();
-        *GPIOA_ODR &= ~(1<<0);
-        *GPIOB_ODR &= ~(1<<5);
-        delay();
-
-
-        *GPIOA_ODR |= (1<<0);
-        *GPIOB_ODR |= (1<<6);
-        delay();
-        *GPIOA_ODR &= ~(1<<0);
-        *GPIOB_ODR &= ~(1<<6);
-        delay();
-
-        *GPIOA_ODR |= (1<<0);
-        *GPIOB_ODR |= (1<<7);
-        delay();
-        *GPIOA_ODR &= ~(1<<0);
-        *GPIOB_ODR &= ~(1<<7);
-        delay();
-
-        *GPIOA_ODR |= (1<<0);
-        *GPIOB_ODR |= (1<<8);
-        delay();
-        *GPIOA_ODR &= ~(1<<0);
-        *GPIOB_ODR &= ~(1<<8);
-        delay();
-
-        *GPIOA_ODR |= (1<<0);
-        *GPIOB_ODR |= (1<<9);
-        delay();
-        *GPIOA_ODR &= ~(1<<0);
-        *GPIOB_ODR &= ~(1<<9);
-        delay();
-
-        //Row =8
-
-        /* *GPIOA_ODR |= (1<<7);
-        *GPIOB_ODR |= (1<<0);
-        delay();
-        *GPIOA_ODR &= ~(1<<7);
-        *GPIOB_ODR &= ~(1<<0);
-        delay();
-        */
-
-        *GPIOA_ODR |= (1<<7);
-        *GPIOB_ODR |= (1<<1);
-        delay();
-        *GPIOA_ODR &= ~(1<<7);
-        *GPIOB_ODR &= ~(1<<1);
-        delay();
-
-        *GPIOA_ODR |= (1<<7);
-        *GPIOB_ODR |= (1<<2);
-        delay();
-        *GPIOA_ODR &= ~(1<<7);
-        *GPIOB_ODR &= ~(1<<2);
-        delay();
-
-
-        *GPIOA_ODR |= (1<<7);
-        *GPIOB_ODR |= (1<<5);
-        delay();
-        *GPIOA_ODR &= ~(1<<7);
-        *GPIOB_ODR &= ~(1<<5);
-        delay();
-
-        *GPIOA_ODR |= (1<<7);
-        *GPIOB_ODR |= (1<<6);
-        delay();
-        *GPIOA_ODR &= ~(1<<7);
-        *GPIOB_ODR &= ~(1<<6);
-        delay();
-
-        *GPIOA_ODR |= (1<<7);
-        *GPIOB_ODR |= (1<<7);
-        delay();
-        *GPIOA_ODR &= ~(1<<7);
-        *GPIOB_ODR &= ~(1<<7);
-        delay();
-
-        *GPIOA_ODR |= (1<<7);
-        *GPIOB_ODR |= (1<<8);
-        delay();
-        *GPIOA_ODR &= ~(1<<7);
-        *GPIOB_ODR &= ~(1<<8);
-        delay();
-
-        /*
-        *GPIOA_ODR |= (1<<7);
-        *GPIOB_ODR |= (1<<9);
-        delay();
-        *GPIOA_ODR &= ~(1<<7);
-        *GPIOB_ODR &= ~(1<<9);
-        delay(); */
-
-        //column = 8
-
-       /* *GPIOA_ODR |= (1<<0);
-        *GPIOB_ODR |= (1<<9);
-        delay();
-        *GPIOA_ODR &= ~(1<<0);
-        *GPIOB_ODR &= ~(1<<9);
-        delay();
-        */
-
-
-        *GPIOA_ODR |= (1<<1);
-        *GPIOB_ODR |= (1<<9);
-        delay();
-        *GPIOA_ODR &= ~(1<<1);
-        *GPIOB_ODR &= ~(1<<9);
-        delay();
-
-        *GPIOA_ODR |= (1<<2);
-        *GPIOB_ODR |= (1<<9);
-        delay();
-        *GPIOA_ODR &= ~(1<<2);
-        *GPIOB_ODR &= ~(1<<9);
-        delay();
-
-        *GPIOA_ODR |= (1<<3);
-        *GPIOB_ODR |= (1<<9);
-        delay();
-        *GPIOA_ODR &= ~(1<<3);
-        *GPIOB_ODR &= ~(1<<9);
-        delay();
-
-        *GPIOA_ODR |= (1<<4);
-        *GPIOB_ODR |= (1<<9);
-        delay();
-        *GPIOA_ODR &= ~(1<<4);
-        *GPIOB_ODR &= ~(1<<9);
-        delay();
-
-        *GPIOA_ODR |= (1<<5);
-        *GPIOB_ODR |= (1<<9);
-        delay();
-        *GPIOA_ODR &= ~(1<<5);
-        *GPIOB_ODR &= ~(1<<9);
-        delay();
-
-        *GPIOA_ODR |= (1<<6);
-        *GPIOB_ODR |= (1<<9);
-        delay();
-        *GPIOA_ODR &= ~(1<<6);
-        *GPIOB_ODR &= ~(1<<9);
-        delay();
-
-        *GPIOA_ODR |= (1<<7);
-        *GPIOB_ODR |= (1<<9);
-        delay();
-        *GPIOA_ODR &= ~(1<<7);
-        *GPIOB_ODR &= ~(1<<9);
-        delay();
-
     }
 }
