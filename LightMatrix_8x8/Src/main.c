@@ -11,7 +11,7 @@ volatile unsigned int *GPIOB_ODR=(volatile unsigned int*)0x40020414;
 void delay()
 {
 	int i = 0;
-	while (i < 90000) {
+	while (i < 900000) {
 	    __asm("NOP");
 	    i++;
 	}
@@ -64,7 +64,7 @@ int main()
                     delay();
                     *GPIOA_ODR &= ~(1<<i);
                     *GPIOB_ODR &= ~(1<<j);
-                    delay();
+
                 }
             }
         }
